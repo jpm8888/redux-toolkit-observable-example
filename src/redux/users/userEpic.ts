@@ -2,7 +2,7 @@ import {catchError, debounceTime, from, map, mergeMap, of, takeUntil} from "rxjs
 import {Epic, ofType} from "redux-observable";
 import axios from "axios";
 import {RootState} from "../rootReducer";
-import {UserAction, getUsersFailure, getUsersStart, getUsersSuccess, User} from "./userSlice";
+import {getUsersFailure, getUsersStart, getUsersSuccess, User, UserActions} from "./userSlice";
 
 async function fetchUsers(): Promise<User[]>{
     const url = 'https://jsonplaceholder.typicode.com/users';
@@ -10,11 +10,11 @@ async function fetchUsers(): Promise<User[]>{
     return response.data;
 }
 
-export const fetchUsersEpic: Epic<UserAction, UserAction, RootState> = (action$, state$) =>
+export const fetchUsersEpic: Epic<UserActions, UserActions, RootState> = (action$, state$) =>
     action$.pipe(
         ofType(getUsersStart.type),
         debounceTime(250),
-        map((x: UserAction) => x.payload),
+        map((x: UserActions) => x.payload),
         mergeMap((data) =>{
             console.log('-----------', data);
             return from(fetchUsers()).pipe(

@@ -19,7 +19,6 @@ const initialState: UserState = {
     error: null,
 };
 
-
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -42,4 +41,7 @@ export const userSlice = createSlice({
 export const { getUsersStart, getUsersSuccess, getUsersFailure } = userSlice.actions;
 export const userReducer = userSlice.reducer;
 
-
+export interface UserAction {
+    type: string;
+    payload: string | null | User[] | undefined;
+}

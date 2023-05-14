@@ -5,5 +5,4 @@ interface TestAction {
     payload: null;
 }
 
-
-export type CommonAction = UserAction | TestAction ;
+export type RootActions = UserAction | TestAction ;

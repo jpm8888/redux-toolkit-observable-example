@@ -1,8 +1,4 @@
 import {UserActions} from "./users/userSlice";
-//
-// interface TestAction {
-//     type: string;
-//     payload: null;
-// }
+import {TodoActions} from "./todos/todoSlice";
 
-export type RootActions = UserActions; // | TestAction;
+export type RootActions = UserActions | TodoActions; // | TestAction;

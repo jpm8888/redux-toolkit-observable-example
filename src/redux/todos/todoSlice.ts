@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type Todo = {
     id: number;
@@ -27,6 +27,7 @@ export const todoSlice = createSlice({
             state.error = null;
         },
         getTodosSuccess(state, action: PayloadAction<Todo[]>) {
+            console.log('--todos success--', action.payload);
             state.isLoading = false;
             state.todos = action.payload;
         },
@@ -40,11 +41,8 @@ export const todoSlice = createSlice({
 export const { getTodosStart, getTodosSuccess, getTodosFailure } = todoSlice.actions;
 export const todoReducer = todoSlice.reducer;
 
-type MyType<T extends string> = T extends `${infer A}` | `${infer B}` ? A | B : never;
-const values = [getTodosStart.type, getTodosSuccess.type, getTodosFailure.type] as const;
-type AllowedValues = typeof values[number];
 
-export interface TodoAction {
-    type: MyType<AllowedValues>;
-    payload: string | null | Todo[] | undefined;
-}
+export type TodoActions =
+    | ReturnType<typeof getTodosStart>
+    | ReturnType<typeof getTodosSuccess>
+    | ReturnType<typeof getTodosFailure>;

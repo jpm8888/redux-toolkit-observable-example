@@ -1,5 +1,5 @@
-import {catchError, debounceTime, from, map, mergeMap, of, takeUntil} from "rxjs";
-import {Epic, ofType} from "redux-observable";
+import {catchError, debounceTime, filter, from, map, mergeMap, of, takeUntil} from "rxjs";
+import {Epic} from "redux-observable";
 import axios from "axios";
 import {RootState} from "../rootReducer";
 import {getUsersFailure, getUsersStart, getUsersSuccess, User, UserActions} from "./userSlice";
@@ -12,18 +12,18 @@ async function fetchUsers(): Promise<User[]>{
 
 export const fetchUsersEpic: Epic<UserActions, UserActions, RootState> = (action$, state$) =>
     action$.pipe(
-        ofType(getUsersStart.type),
+        filter(getUsersStart.match),
         debounceTime(250),
         map((x: UserActions) => x.payload),
         mergeMap((data) =>{
-            console.log('-----------', data);
+            console.log('-----payload------', data);
             return from(fetchUsers()).pipe(
                 map((res: User[]) => {
                     // demo purposes if you need to get the value from reducer in epic.
                     console.log(state$.value.userReducer.users);
                     return getUsersSuccess(res);
                 }),
-                takeUntil(action$.pipe(ofType(getUsersStart.type))),
+                takeUntil(action$.pipe(filter(getUsersStart.match))),
                 catchError(error => {
                     return of(getUsersFailure(error));
                 })

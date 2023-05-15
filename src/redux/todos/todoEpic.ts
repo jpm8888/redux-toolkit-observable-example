@@ -1,8 +1,8 @@
-import {catchError, debounceTime, from, map, mergeMap, of, takeUntil} from "rxjs";
-import {Epic, ofType} from "redux-observable";
+import {catchError, debounceTime, filter, from, map, mergeMap, of, takeUntil} from "rxjs";
+import {Epic} from "redux-observable";
 import axios from "axios";
 import {RootState} from "../rootReducer";
-import {getTodosFailure, getTodosStart, getTodosSuccess, Todo, TodoAction} from "./todoSlice";
+import {getTodosFailure, getTodosStart, getTodosSuccess, Todo, TodoActions} from "./todoSlice";
 
 async function fetchTodo(): Promise<Todo[]>{
     const url = 'https://jsonplaceholder.typicode.com/todos';
@@ -10,9 +10,9 @@ async function fetchTodo(): Promise<Todo[]>{
     return response.data;
 }
 
-export const fetchTodoEpic: Epic<TodoAction, TodoAction, RootState> = (action$, state$) =>
+export const fetchTodoEpic: Epic<TodoActions, TodoActions, RootState> = (action$, state$) =>
     action$.pipe(
-        ofType(getTodosStart.type),
+        filter(getTodosStart.match),
         debounceTime(250),
         mergeMap(() =>{
             return from(fetchTodo()).pipe(
@@ -21,7 +21,7 @@ export const fetchTodoEpic: Epic<TodoAction, TodoAction, RootState> = (action$, 
                     console.log(state$.value.todoReducer.todos);
                     return getTodosSuccess(res);
                 }),
-                takeUntil(action$.pipe(ofType(getTodosStart.type))),
+                takeUntil(action$.pipe(filter(getTodosStart.match))),
                 catchError(error => {
                     return of(getTodosFailure(error));
                 })

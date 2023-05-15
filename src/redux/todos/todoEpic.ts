@@ -2,7 +2,8 @@ import {catchError, debounceTime, filter, from, map, mergeMap, of, takeUntil} fr
 import {Epic} from "redux-observable";
 import axios from "axios";
 import {RootState} from "../rootReducer";
-import {getTodosFailure, getTodosStart, getTodosSuccess, Todo, TodoActions} from "./todoSlice";
+import {getTodosFailure, getTodosStart, getTodosSuccess, Todo} from "./todoSlice";
+import {RootActions} from "../rootActions";
 
 async function fetchTodo(): Promise<Todo[]>{
     const url = 'https://jsonplaceholder.typicode.com/todos';
@@ -10,7 +11,7 @@ async function fetchTodo(): Promise<Todo[]>{
     return response.data;
 }
 
-export const fetchTodoEpic: Epic<TodoActions, TodoActions, RootState> = (action$, state$) =>
+export const fetchTodoEpic: Epic<RootActions, RootActions, RootState> = (action$, state$) =>
     action$.pipe(
         filter(getTodosStart.match),
         debounceTime(250),

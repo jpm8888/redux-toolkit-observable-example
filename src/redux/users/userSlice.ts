@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type User = {
     id: number;
@@ -19,10 +19,10 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-    name: 'user',
+    name: 'users',
     initialState,
     reducers: {
-        getUsersStart(state) {
+        getUsersStart(state, _action: PayloadAction<string>) {
             state.isLoading = true;
             state.error = null;
         },
@@ -40,7 +40,7 @@ export const userSlice = createSlice({
 export const { getUsersStart, getUsersSuccess, getUsersFailure } = userSlice.actions;
 export const userReducer = userSlice.reducer;
 
-export interface UserAction {
-    type: string;
-    payload: string | null | User[] | undefined;
-}
+export type UserActions =
+    | ReturnType<typeof getUsersStart>
+    | ReturnType<typeof getUsersSuccess>
+    | ReturnType<typeof getUsersFailure>;

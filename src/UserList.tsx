@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {RootState} from "./redux/rootReducer";
 import {getUsersStart} from "./redux/users/userSlice";
+import {getTodosStart} from "./redux/todos/todoSlice";
 
 
 const UserList = () => {
@@ -9,7 +10,8 @@ const UserList = () => {
     const { users, isLoading, error } = useSelector((state: RootState) => state.userReducer);
 
     useEffect(() => {
-        dispatch(getUsersStart());
+        dispatch(getUsersStart('test string'));
+        dispatch(getTodosStart());
     }, [dispatch]);
 
     if (isLoading) {
